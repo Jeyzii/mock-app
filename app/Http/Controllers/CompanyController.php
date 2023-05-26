@@ -37,13 +37,15 @@ class CompanyController extends Controller
      */
     public function store(CompanyRequest $request)
     {
-
-        try{
+        try {
             $logoPath = null;
 
             if ($request->hasFile('logo')) {
                 $logoPath = $request->file('logo')->store('public/Company-Logos');
-            }   
+                if (!Storage::exists('public/Company-Logos')) {
+                    Storage::makeDirectory('public/Company-Logos');
+                }
+            }
 
             $company = new Company;
             $company->name = $request->name;
@@ -51,7 +53,7 @@ class CompanyController extends Controller
             $company->web_url = $request->web_url;
             $company->logo = $logoPath ? Storage::url($logoPath) : null;
             $company->save();
-            
+
             $company->notify(new NewCompanyNotification($company));
 
             return redirect('/companies')->with('success', 'Company created');
@@ -59,6 +61,7 @@ class CompanyController extends Controller
             return redirect('/companies')->with('error', 'Failed to create company');
         }
     }
+
 
     /**
      * Display the specified resource.
