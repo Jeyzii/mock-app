@@ -79,7 +79,7 @@ class EmployeeController extends Controller
         try{
             $employee = Employee::findOrFail($id);
             $employee->first_name = $request->first_name;
-            $employee->last_name = $request->first_name;
+            $employee->last_name = $request->last_name;
             $employee->company_id = $request->company;
             $employee->email = $request->email;
             $employee->phone = $request->phone;
