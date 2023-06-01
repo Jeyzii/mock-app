@@ -38,13 +38,16 @@ class CompanyController extends Controller
     public function store(CompanyRequest $request)
     {
         try {
-            $logoPath = null;
-
-            if ($request->hasFile('logo')) {
-                $logoPath = $request->file('logo')->store('public/Company-Logos');
+            if ($request->has('logo')) {
+                $file = $request->file('logo');
+                $extension = $file->extension();
+                $fileName = $request->name . '_' . 'logo' . '.' . $extension;
+                
                 if (!Storage::exists('public/Company-Logos')) {
                     Storage::makeDirectory('public/Company-Logos');
                 }
+    
+                $logoPath = $file->storeAs('public/Company-Logos', $fileName);
             }
 
             $company = new Company;
@@ -86,10 +89,12 @@ class CompanyController extends Controller
     public function update(CompanyRequest $request, string $id)
     {
         try{
-            $logoPath = null;
-        
-            if ($request->hasFile('logo')) {
-                $logoPath = $request->file('logo')->store('public/Company-Logos');
+            if ($request->has('logo')) {
+                $file = $request->file('logo');
+                $extension = $file->extension();
+                $fileName = $request->name . '_' . 'logo' . '.' . $extension;
+    
+                $logoPath = $file->storeAs('public/Company-Logos', $fileName);
             }
         
             $company = Company::findOrFail($id);
